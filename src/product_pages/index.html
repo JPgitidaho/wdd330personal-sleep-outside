@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sleep Outside | Product Details</title>
     <link rel="stylesheet" href="../css/style.css" />
-    <script src="../js/product.js" type="module"></script>
 </head>
 
 <body>
@@ -16,20 +15,26 @@
             <a href="../index.html"> Sleep<span class="highlight">Outside</span></a>
         </div>
         <div class="cart">
-            <a href="../cart/index.html">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-                    <path
-                        d="M18.9 32.6c1.1 2.4 2.5 3.3 5.4 3.3 1.6 0 3.6-0.3 5.9-0.6 3.2-0.5 6.9-1 11.2-1 2.1 0 4.3 0.1 6.4 0.3 2.1 0.1 4.2 0.3 6.1 0.3 3.2 0 5.2-0.4 5.9-1.2 2.7-2.7 2.8-8.8 2.9-14.6 0.1-6.7 0.2-14.5 4.6-18.7..." />
-                </svg>
-            </a>
+            <a href="../cart/index.html">🛒</a>
         </div>
     </header>
 
-    <main class="divider">
-        <section class="product-detail"></section>
-    </main>
+    <main class="divider"></main>
+
+    <template class="product-detail">
+        <section>
+            <h3></h3>
+            <h2></h2>
+            <img />
+            <p class="description"></p>
+            <p class="price"></p>
+            <p class="final-price"></p>
+            <button id="addToCart">Add to Cart</button>
+        </section>
+    </template>
 
     <footer>&copy;2025 Sleep Outside</footer>
+    <script type="module" src="../js/ProductDetailsMain.js"></script>
 </body>
 
 </html>

@@ -1,38 +1,58 @@
 import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 
 export default class ProductDetails {
-  constructor(productId, dataSource) {
+  constructor(productId, dataSource, element) {
     this.productId = productId;
     this.dataSource = dataSource;
-    this.product = {};
+    this.element = element;
+    this.product = null;
   }
 
   async init() {
     this.product = await this.dataSource.findProductById(this.productId);
-    this.renderProductDetails();
-    document
-      .getElementById("addToCart")
-      .addEventListener("click", this.addProductToCart.bind(this));
+    if (this.product) {
+      this.renderProductDetails(this.product);
+      document
+        .getElementById("addToCart")
+        .addEventListener("click", this.addProductToCart.bind(this));
+    } else {
+      this.element.innerHTML = "<p>Product not found.</p>";
+    }
+  }
+
+  renderProductDetails(product) {
+    const template = document.querySelector("template.product-detail");
+    const clone = template.content.cloneNode(true);
+
+    const h3 = clone.querySelector("h3");
+    const h2 = clone.querySelector("h2");
+    const img = clone.querySelector("img");
+    const description = clone.querySelector(".description");
+    const price = clone.querySelector(".price");
+    const finalPrice = clone.querySelector(".final-price");
+
+    if (h3) h3.textContent = product.Brand?.Name ?? "";
+    if (h2) h2.textContent = product.Name ?? product.Title ?? "";
+    if (img) {
+      img.src = product.Image ?? product.image ?? "";
+      img.alt = product.Name ?? "";
+    }
+    if (description)
+      description.textContent =
+        product.DescriptionHtmlSimple ?? product.Description ?? "";
+    if (price)
+      price.textContent = product.SuggestedRetailPrice ?? product.price ?? "";
+    if (finalPrice) finalPrice.textContent = `$${product.FinalPrice}`;
+
+    this.element.innerHTML = "";
+    this.element.appendChild(clone);
   }
 
   addProductToCart() {
-    const cartItems = getLocalStorage("so-cart") || [];
-    cartItems.push(this.product);
-    setLocalStorage("so-cart", cartItems);
-  }
+    let cart = getLocalStorage("so-cart") || [];
+    cart.push(this.product);
+    setLocalStorage("so-cart", cart);
 
-  renderProductDetails() {
-    const container = document.querySelector(".product-detail");
-    container.innerHTML = `
-      <h3>${this.product.Brand?.Name || ""}</h3>
-      <h2 class="divider">${this.product.NameWithoutBrand}</h2>
-      <img src="${this.product.Image}" alt="${this.product.Name}">
-      <p class="product-card__price">$${this.product.FinalPrice}</p>
-      <p class="product__color">${this.product.Colors[0].ColorName}</p>
-      <p class="product__description">${this.product.DescriptionHtmlSimple}</p>
-      <div class="product-detail__add">
-        <button id="addToCart" data-id="${this.product.Id}">Add to Cart</button>
-      </div>
-    `;
+    alert("Product added to cart!");
   }
 }
