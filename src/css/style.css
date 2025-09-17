@@ -255,19 +255,24 @@ button {
   grid-row: 2;
   grid-column: 3;
 }
-/*about-section
------------------------------------*/
-.about-section {
-  padding: 2rem;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  margin: 1rem auto;
-  max-width: 800px;
+.remove-item {
+  background: none;
+  border: none;
+  color: #c00;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: color 0.2s ease-in-out;
 }
 
-.about-section h2 {
-  color: var(--secondary-color);
-  margin-bottom: 1rem;
+.remove-item:hover {
+  color: #900;
+}
+
+.cart-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 @media screen and (min-width: 500px) {
