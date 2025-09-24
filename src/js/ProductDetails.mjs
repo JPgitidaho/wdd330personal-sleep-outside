@@ -50,6 +50,24 @@ export default class ProductDetails {
     clone.querySelector(".final-price").textContent =
       `Now: $${product.FinalPrice ?? product.ListPrice ?? product.SuggestedRetailPrice ?? "0.00"}`;
 
+    if (
+      product.SuggestedRetailPrice &&
+      product.FinalPrice &&
+      product.SuggestedRetailPrice > product.FinalPrice
+    ) {
+      const discount = Math.round(
+        ((product.SuggestedRetailPrice - product.FinalPrice) /
+          product.SuggestedRetailPrice) *
+          100,
+      );
+      if (discount > 0) {
+        const discountBadge = document.createElement("span");
+        discountBadge.classList.add("discount-badge");
+        discountBadge.textContent = `-${discount}% OFF`;
+        clone.querySelector(".product-detail").prepend(discountBadge);
+      }
+    }
+
     this.element.innerHTML = "";
     this.element.appendChild(clone);
   }

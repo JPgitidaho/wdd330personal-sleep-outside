@@ -4,6 +4,14 @@ loadHeaderFooter();
 
 function renderSummary() {
   const cartItems = getLocalStorage("so-cart") || [];
+  const summaryList = document.getElementById("summary-items");
+
+  if (summaryList) {
+    summaryList.innerHTML = cartItems
+      .map((item) => summaryItemTemplate(item))
+      .join("");
+  }
+
   const subtotal = cartItems.reduce(
     (sum, item) =>
       sum +
@@ -26,6 +34,34 @@ function renderSummary() {
     `Tax: $${tax.toFixed(2)}`;
   document.getElementById("summary-total").textContent =
     `Order Total: $${total.toFixed(2)}`;
+}
+
+function summaryItemTemplate(item) {
+  const price =
+    item.FinalPrice ?? item.ListPrice ?? item.SuggestedRetailPrice ?? 0;
+
+  let discountBadge = "";
+  if (
+    item.SuggestedRetailPrice &&
+    item.FinalPrice &&
+    item.SuggestedRetailPrice > item.FinalPrice
+  ) {
+    const discount = Math.round(
+      ((item.SuggestedRetailPrice - item.FinalPrice) /
+        item.SuggestedRetailPrice) *
+        100,
+    );
+    if (discount > 0) {
+      discountBadge = `<span class="discount-badge">-${discount}% OFF</span>`;
+    }
+  }
+
+  return `
+    <li class="summary-item">
+      <span class="summary-name">${item.Name} (Qty: ${item.quantity || 1})</span>
+      <span class="summary-price">$${Number(price).toFixed(2)} ${discountBadge}</span>
+    </li>
+  `;
 }
 
 function handleFormSubmit(e) {

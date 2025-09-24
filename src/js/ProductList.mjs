@@ -9,12 +9,29 @@ function productCardTemplate(product, category) {
     product.SuggestedRetailPrice ??
     0;
 
+  let discountBadge = "";
+  if (
+    product.SuggestedRetailPrice &&
+    product.FinalPrice &&
+    product.SuggestedRetailPrice > product.FinalPrice
+  ) {
+    const discount = Math.round(
+      ((product.SuggestedRetailPrice - product.FinalPrice) /
+        product.SuggestedRetailPrice) *
+        100,
+    );
+    if (discount > 0) {
+      discountBadge = `<span class="discount-badge">-${discount}% OFF</span>`;
+    }
+  }
+
   return `
   <li class="product-card">
     <a href="/product_pages/index.html?product=${encodeURIComponent(
       product.Id,
     )}&category=${encodeURIComponent(category)}">
       <img src="${imageUrl}" alt="${product.Name}" />
+      ${discountBadge}
       <h3 class="card__brand">${product.Brand?.Name ?? ""}</h3>
       <h2 class="card__name">${product.Name}</h2>
       <p class="product-card__price">$${price}</p>

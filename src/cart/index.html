@@ -1,29 +1,24 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shopping Cart | Sleep Outside</title>
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 
 <body>
   <header id="main-header" class="divider"></header>
-
-  <main class="divider">
-    <h1>Shopping Cart</h1>
-    <ul class="cart-list">
-    </ul>
-    <div class="cart-total">
-      Subtotal (0 items): $0.00
-    </div>
-    <div class="cart-checkout">
+  <main>
+    <ul class="cart-list"></ul>
+    <div class="cart-footer hide">
+      <p id="cart-total" class="cart-total">Subtotal (0 items): $0.00</p>
       <a href="../checkout/index.html" class="checkout-btn">Checkout</a>
     </div>
   </main>
-
-  <footer id="main-footer"></footer>
+  <footer id="main-footer" class="divider"></footer>
   <script type="module" src="../js/cart.js"></script>
 </body>
 
