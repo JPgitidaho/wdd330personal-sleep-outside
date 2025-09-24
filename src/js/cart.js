@@ -3,8 +3,13 @@ import {
   setLocalStorage,
   loadHeaderFooter,
 } from "./utils.mjs";
+import { initCartBadge } from "./cartBadge.mjs";
 
-loadHeaderFooter();
+async function init() {
+  await loadHeaderFooter();
+  initCartBadge();
+  renderCartContents();
+}
 
 function getPrice(item) {
   return Number(
@@ -47,58 +52,73 @@ function renderCartContents() {
 
   if (footerElement) footerElement.classList.remove("hide");
 
-  document.querySelectorAll(".remove-x").forEach((btn) => {
+  document.querySelectorAll(".remove-item").forEach((btn) => {
     btn.addEventListener("click", (e) => {
-      const id = e.target.dataset.id;
-      removeItem(id);
+      const index = e.currentTarget.dataset.index;
+      removeItem(index);
     });
   });
 }
 
-function cartItemTemplate(item) {
+function cartItemTemplate(item, index) {
   const imageUrl =
     item.Images?.PrimarySmall ?? item.Images?.PrimaryMedium ?? "";
-  const price = getPrice(item);
+  const finalPrice =
+    item.FinalPrice ?? item.ListPrice ?? item.SuggestedRetailPrice ?? 0;
 
+  let priceBlock = `$${Number(finalPrice).toFixed(2)}`;
   let discountBadge = "";
+
   if (
-    (item.SuggestedRetailPrice ?? item.suggested_retail_price) &&
-    (item.FinalPrice ?? item.final_price) &&
-    (item.SuggestedRetailPrice ?? item.suggested_retail_price) >
-      (item.FinalPrice ?? item.final_price)
+    item.SuggestedRetailPrice &&
+    item.FinalPrice &&
+    item.SuggestedRetailPrice > item.FinalPrice
   ) {
-    const base = Number(
-      item.SuggestedRetailPrice ?? item.suggested_retail_price,
+    const discount = Math.round(
+      ((item.SuggestedRetailPrice - item.FinalPrice) /
+        item.SuggestedRetailPrice) *
+        100,
     );
-    const now = Number(item.FinalPrice ?? item.final_price);
-    const discount = Math.round(((base - now) / base) * 100);
-    if (discount > 0) {
-      discountBadge = `<span class="discount-badge">-${discount}% OFF</span>`;
-    }
+    discountBadge = `<span class="discount-badge">-${discount}% OFF</span>`;
+    priceBlock = `
+      <span style="text-decoration: line-through; color:#888;">
+        $${item.SuggestedRetailPrice.toFixed(2)}
+      </span>
+      <span style="font-weight:bold; color:#b91c1c; margin-left:0.5rem;">
+        $${item.FinalPrice.toFixed(2)}
+      </span>
+    `;
   }
 
   return `
     <li class="cart-card divider">
-      <span class="remove-x" data-id="${item.Id}">
-        <i class="fa-solid fa-trash"></i>
-      </span>
       <img src="${imageUrl}" alt="${item.Name}" class="cart-card__image" />
       <div class="cart-card__info">
-        ${discountBadge}
         <h2 class="card__name">${item.Name}</h2>
         <p>Qty: ${item.quantity || 1}</p>
       </div>
       <div class="cart-card__actions">
-        <p class="cart-card__price">$${price.toFixed(2)}</p>
+        <p class="cart-card__price">
+          ${priceBlock} ${discountBadge}
+          <button class="remove-item" data-index="${index}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+                 viewBox="0 0 24 24" fill="#525b0f" aria-hidden="true">
+              <path d="M9 3h6v2h5v2H4V5h5V3zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM7 9h2v9H7V9z"/>
+            </svg>
+          </button>
+        </p>
       </div>
     </li>`;
 }
 
-function removeItem(id) {
+function removeItem(index) {
   let cartItems = getLocalStorage("so-cart") || [];
-  cartItems = cartItems.filter((item) => item.Id !== id);
+  cartItems.splice(index, 1);
   setLocalStorage("so-cart", cartItems);
+
+  document.dispatchEvent(new Event("cart:updated"));
+
   renderCartContents();
 }
 
-renderCartContents();
+init();

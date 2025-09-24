@@ -12,14 +12,20 @@
   <header id="main-header" class="divider"></header>
 
   <main class="checkout-container divider">
-    <aside class="summary-box">
-      <h2>Summary</h2>
-      <ul id="summary-items"></ul>
-      <p id="summary-subtotal">Subtotal: $0.00</p>
-      <p id="summary-shipping">Shipping Estimate: $0.00</p>
-      <p id="summary-tax">Tax: $0.00</p>
-      <p id="summary-total"><strong>Order Total: $0.00</strong></p>
-    </aside>
+    <div class="summary-box">
+      <h3>Summary</h3>
+      <ul id="summary-items">
+
+      </ul>
+      <div class="summary-totals">
+        <p>Subtotal: <span id="summary-subtotal"></span></p>
+        <p>Shipping: <span id="summary-shipping"></span></p>
+        <p>Tax: <span id="summary-tax"></span></p>
+        <p class="summary-total">Order Total: <span id="summary-total"></span></p>
+      </div>
+
+    </div>
+
 
     <section>
       <h1>Review & Place your Order</h1>

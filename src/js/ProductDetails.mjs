@@ -45,27 +45,35 @@ export default class ProductDetails {
       product.DescriptionHtmlSimple ?? product.Description ?? "";
     clone.querySelector(".description").innerHTML = cleanHtml(rawDescription);
 
-    clone.querySelector(".price").textContent =
-      `Regular: $${product.SuggestedRetailPrice ?? product.ListPrice ?? "0.00"}`;
-    clone.querySelector(".final-price").textContent =
-      `Now: $${product.FinalPrice ?? product.ListPrice ?? product.SuggestedRetailPrice ?? "0.00"}`;
-
     if (
       product.SuggestedRetailPrice &&
       product.FinalPrice &&
       product.SuggestedRetailPrice > product.FinalPrice
     ) {
+      clone.querySelector(".price").innerHTML =
+        `<span style="text-decoration: line-through; color: #888;">
+         $${product.SuggestedRetailPrice.toFixed(2)}
+       </span>`;
+      // Mostrar precio final destacado
+      clone.querySelector(".final-price").innerHTML =
+        `<span style="font-weight: bold; color: #b91c1c;">
+         $${product.FinalPrice.toFixed(2)}
+       </span>`;
+
       const discount = Math.round(
         ((product.SuggestedRetailPrice - product.FinalPrice) /
           product.SuggestedRetailPrice) *
           100,
       );
-      if (discount > 0) {
-        const discountBadge = document.createElement("span");
-        discountBadge.classList.add("discount-badge");
-        discountBadge.textContent = `-${discount}% OFF`;
-        clone.querySelector(".product-detail").prepend(discountBadge);
-      }
+      const discountBadge = document.createElement("span");
+      discountBadge.classList.add("discount-badge");
+      discountBadge.textContent = `-${discount}% OFF`;
+      clone.querySelector(".product-detail").prepend(discountBadge);
+    } else {
+      // Si no hay descuento
+      clone.querySelector(".final-price").textContent =
+        `$${(product.FinalPrice ?? product.ListPrice ?? product.SuggestedRetailPrice ?? 0).toFixed(2)}`;
+      clone.querySelector(".price").textContent = "";
     }
 
     this.element.innerHTML = "";
@@ -84,5 +92,6 @@ export default class ProductDetails {
     }
 
     setLocalStorage("so-cart", cart);
+    document.dispatchEvent(new Event("cart:updated"));
   }
 }
