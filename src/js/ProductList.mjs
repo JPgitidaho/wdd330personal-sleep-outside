@@ -1,20 +1,26 @@
-import {
-  renderListWithTemplate,
-  getLocalStorage,
-  setLocalStorage,
-} from "./utils.mjs";
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 
-function productCardTemplate(product) {
+function productCardTemplate(product, category) {
+  const imageUrl =
+    product.Images?.PrimaryMedium ?? product.Images?.PrimarySmall ?? "";
+  const price =
+    product.FinalPrice ??
+    product.ListPrice ??
+    product.SuggestedRetailPrice ??
+    0;
+
   return `
-    <li class="product-card">
-      <a href="/product_pages/index.html?product=${product.Id}">
-        <img src="${product.Image}" alt="${product.Name}">
-        <h3>${product.Name}</h3>
-        <p class="price">$${product.ListPrice}</p>
-      </a>
-      <button class="addToCart" data-id="${product.Id}">Add to Cart</button>
-    </li>
-  `;
+  <li class="product-card">
+    <a href="/product_pages/index.html?product=${encodeURIComponent(
+      product.Id,
+    )}&category=${encodeURIComponent(category)}">
+      <img src="${imageUrl}" alt="${product.Name}" />
+      <h3 class="card__brand">${product.Brand?.Name ?? ""}</h3>
+      <h2 class="card__name">${product.Name}</h2>
+      <p class="product-card__price">$${price}</p>
+    </a>
+    <button class="add-to-cart" data-id="${product.Id}">Quick view</button>
+  </li>`;
 }
 
 export default class ProductList {
@@ -25,43 +31,36 @@ export default class ProductList {
   }
 
   async init() {
-    const data = await this.dataSource.getData();
-    this.renderList(data);
-    this.addToCartHandler();
+    const list = await this.dataSource.getData(this.category);
+    this.renderList(list);
+    this.addToCartHandler(list);
   }
 
   renderList(list) {
-    if (!list || list.length === 0) {
-      this.listElement.innerHTML = "<li>No products available</li>";
-      return;
-    }
-
-    renderListWithTemplate(
-      productCardTemplate,
-      this.listElement,
-      list,
-      "afterbegin",
-      true,
-    );
+    const template = list
+      .map((product) => productCardTemplate(product, this.category))
+      .join("");
+    this.listElement.innerHTML = template;
   }
 
-  addToCartHandler() {
+  addToCartHandler(products) {
     this.listElement.addEventListener("click", (e) => {
-      const btn = e.target.closest(".addToCart");
+      const btn = e.target.closest(".add-to-cart");
       if (!btn) return;
+
       const id = btn.dataset.id;
-
       let cart = getLocalStorage("so-cart") || [];
-      const idx = cart.findIndex((i) => i.Id === id);
+      const product = products.find((p) => p.Id === id);
 
-      if (idx >= 0) {
-        cart[idx].quantity = (cart[idx].quantity || 1) + 1;
+      const existing = cart.find((item) => item.Id === id);
+      if (existing) {
+        existing.quantity = (existing.quantity || 1) + 1;
       } else {
-        cart.push({ Id: id, quantity: 1 });
+        product.quantity = 1;
+        cart.push(product);
       }
 
       setLocalStorage("so-cart", cart);
-      alert("Product added to cart!");
     });
   }
 }

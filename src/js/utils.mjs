@@ -24,17 +24,24 @@ export function getParam(param) {
   return urlParams.get(param);
 }
 
-export function renderListWithTemplate(
-  templateFn,
-  parentElement,
-  list,
-  position = "afterbegin",
-  clear = false,
-) {
-  if (clear) {
-    parentElement.innerHTML = "";
+export function renderWithTemplate(template, parentElement, data, callback) {
+  parentElement.innerHTML = template;
+  if (callback) {
+    callback();
   }
-  list.forEach((item) => {
-    parentElement.insertAdjacentHTML(position, templateFn(item));
-  });
+}
+
+export async function loadTemplate(path) {
+  const response = await fetch(path);
+  if (response.ok) {
+    return await response.text();
+  }
+  throw new Error("Failed to load template: " + path);
+}
+
+export async function loadHeaderFooter() {
+  const header = await loadTemplate("/partials/header.html");
+  const footer = await loadTemplate("/partials/footer.html");
+  renderWithTemplate(header, document.getElementById("main-header"));
+  renderWithTemplate(footer, document.getElementById("main-footer"));
 }

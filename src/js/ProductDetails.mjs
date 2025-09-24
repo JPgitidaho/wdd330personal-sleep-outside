@@ -1,8 +1,19 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { setLocalStorage, getLocalStorage } from "./utils.mjs";
+
+function cleanHtml(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  doc.querySelectorAll("a").forEach((el) => {
+    const text = el.textContent;
+    el.replaceWith(text);
+  });
+  return doc.body.innerHTML;
+}
 
 export default class ProductDetails {
-  constructor(productId, dataSource, element) {
+  constructor(productId, category, dataSource, element) {
     this.productId = productId;
+    this.category = category;
     this.dataSource = dataSource;
     this.element = element;
     this.product = null;
@@ -24,25 +35,20 @@ export default class ProductDetails {
     const template = document.querySelector("template.product-detail");
     const clone = template.content.cloneNode(true);
 
-    const h3 = clone.querySelector("h3");
-    const h2 = clone.querySelector("h2");
-    const img = clone.querySelector("img");
-    const description = clone.querySelector(".description");
-    const price = clone.querySelector(".price");
-    const finalPrice = clone.querySelector(".final-price");
+    clone.querySelector("h3").textContent = product.Brand?.Name ?? "";
+    clone.querySelector("h2").textContent = product.Name ?? "";
+    clone.querySelector("img").src =
+      product.Images?.PrimaryLarge ?? product.Images?.PrimaryMedium ?? "";
+    clone.querySelector("img").alt = product.Name ?? "";
 
-    if (h3) h3.textContent = product.Brand?.Name ?? "";
-    if (h2) h2.textContent = product.Name ?? product.Title ?? "";
-    if (img) {
-      img.src = product.Image ?? product.image ?? "";
-      img.alt = product.Name ?? "";
-    }
-    if (description)
-      description.textContent =
-        product.DescriptionHtmlSimple ?? product.Description ?? "";
-    if (price)
-      price.textContent = product.SuggestedRetailPrice ?? product.price ?? "";
-    if (finalPrice) finalPrice.textContent = `$${product.FinalPrice}`;
+    const rawDescription =
+      product.DescriptionHtmlSimple ?? product.Description ?? "";
+    clone.querySelector(".description").innerHTML = cleanHtml(rawDescription);
+
+    clone.querySelector(".price").textContent =
+      `Regular: $${product.SuggestedRetailPrice ?? product.ListPrice ?? "0.00"}`;
+    clone.querySelector(".final-price").textContent =
+      `Now: $${product.FinalPrice ?? product.ListPrice ?? product.SuggestedRetailPrice ?? "0.00"}`;
 
     this.element.innerHTML = "";
     this.element.appendChild(clone);
@@ -50,9 +56,15 @@ export default class ProductDetails {
 
   addProductToCart() {
     let cart = getLocalStorage("so-cart") || [];
-    cart.push(this.product);
-    setLocalStorage("so-cart", cart);
+    const existing = cart.find((item) => item.Id === this.product.Id);
 
-    alert("Product added to cart!");
+    if (existing) {
+      existing.quantity = (existing.quantity || 1) + 1;
+    } else {
+      this.product.quantity = 1;
+      cart.push(this.product);
+    }
+
+    setLocalStorage("so-cart", cart);
   }
 }
