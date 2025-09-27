@@ -48,10 +48,17 @@ function productCardTemplate(product, category) {
     <a href="/product_pages/index.html?product=${encodeURIComponent(
       product.Id,
     )}&category=${encodeURIComponent(category)}">
-      <img src="${imageUrl}" alt="${product.Name}" />
+      <picture>
+        <source media="(min-width: 1024px)" srcset="${
+          product.Images?.PrimaryLarge ?? imageUrl
+        }">
+        <source media="(min-width: 600px)" srcset="${
+          product.Images?.PrimaryMedium ?? imageUrl
+        }">
+        <img src="${product.Images?.PrimarySmall ?? imageUrl}" alt="${product.Name}" />
+      </picture>
       ${discountBadge}
-      <h3 class="card__brand">${product.Brand?.Name ?? ""}</h3>
-      <h2 class="card__name">${product.Name}</h2>
+      <h2>${product.Name}</h2>
       ${priceBlock}
     </a>
     <button class="add-to-cart" data-id="${product.Id}">Quick view</button>

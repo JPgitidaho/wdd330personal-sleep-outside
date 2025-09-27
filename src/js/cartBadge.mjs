@@ -1,12 +1,14 @@
 export function initCartBadge() {
-  const el = document.querySelector("a[href*='cart']");
+  const el = document.querySelector("a[href$='cart/index.html']");
+
   if (!el) return;
   const update = () => {
     const raw = localStorage.getItem("so-cart") || "[]";
     let arr = [];
     try {
       arr = JSON.parse(raw);
-    } catch {}
+    } catch (err) {}
+
     const count = Array.isArray(arr)
       ? arr.reduce((s, i) => s + Number(i.quantity ?? 1), 0)
       : 0;

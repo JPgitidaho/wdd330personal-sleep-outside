@@ -11,72 +11,71 @@
 <body>
   <header id="main-header" class="divider"></header>
 
+
   <main class="checkout-container divider">
     <div class="summary-box">
       <h3>Summary</h3>
-      <ul id="summary-items">
-
-      </ul>
+      <ul id="summary-items"></ul>
       <div class="summary-totals">
         <p>Subtotal: <span id="summary-subtotal"></span></p>
         <p>Shipping: <span id="summary-shipping"></span></p>
         <p>Tax: <span id="summary-tax"></span></p>
         <p class="summary-total">Order Total: <span id="summary-total"></span></p>
       </div>
-
     </div>
-
 
     <section>
       <h1>Review & Place your Order</h1>
-      <form id="form-checkout" class="checkout-form">
-        <fieldset>
-          <legend>Customer Name</legend>
-          <label for="firstName">First Name
-            <input type="text" id="firstName" name="firstName" required>
-          </label>
-          <label for="lastName">Last Name
-            <input type="text" id="lastName" name="lastName" required>
-          </label>
-        </fieldset>
+      <div class="form-container">
+        <form id="form-checkout" class="checkout-form">
+          <fieldset>
+            <legend>Customer Name</legend>
+            <label for="firstName">First Name
+              <input type="text" id="firstName" name="firstName" required>
+            </label>
+            <label for="lastName">Last Name
+              <input type="text" id="lastName" name="lastName" required>
+            </label>
+          </fieldset>
 
-        <fieldset>
-          <legend>Address</legend>
-          <label for="street">Street Address
-            <input type="text" id="street" name="street" required>
-          </label>
-          <label for="city">City
-            <input type="text" id="city" name="city" required>
-          </label>
-          <label for="state">State
-            <input type="text" id="state" name="state" required>
-          </label>
-          <label for="zip">Zip Code
-            <input type="text" id="zip" name="zip" required>
-          </label>
-        </fieldset>
+          <fieldset>
+            <legend>Address</legend>
+            <label for="street">Street Address
+              <input type="text" id="street" name="street" required>
+            </label>
+            <label for="city">City
+              <input type="text" id="city" name="city" required>
+            </label>
+            <label for="state">State
+              <input type="text" id="state" name="state" required>
+            </label>
+            <label for="zip">Zip Code
+              <input type="text" id="zip" name="zip" required>
+            </label>
+          </fieldset>
 
-        <fieldset>
-          <legend>Payment</legend>
-          <label for="ccnum">Credit Card Number
-            <input type="text" id="ccnum" name="ccnum" required>
-          </label>
-          <label for="exp">Expiration Date
-            <input type="text" id="exp" name="exp" placeholder="MM/YY" required>
-          </label>
-          <label for="cvv">Security Code
-            <input type="text" id="cvv" name="cvv" required>
-          </label>
-        </fieldset>
+          <fieldset>
+            <legend>Payment</legend>
+            <label for="ccnum">Credit Card Number
+              <input type="text" id="ccnum" name="ccnum" required>
+            </label>
+            <label for="exp">Expiration Date
+              <input type="text" id="exp" name="exp" placeholder="MM/YY" required>
+            </label>
+            <label for="cvv">Security Code
+              <input type="text" id="cvv" name="cvv" required>
+            </label>
+          </fieldset>
 
-        <div class="checkout-actions">
+
           <button type="submit" class="pay-btn">Pay</button>
-        </div>
-      </form>
+
+        </form>
+      </div>
     </section>
   </main>
 
-  <footer id="main-footer" class="divider"></footer>
+  <footer id="main-footer"></footer>
   <script type="module" src="../js/checkout.js"></script>
 </body>
 

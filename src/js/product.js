@@ -11,7 +11,6 @@ async function init() {
   const category = getParam("category");
   const productElement = document.querySelector("#product-details");
 
-  // Le paso un objeto con la forma que espera ProductDetails
   const product = new ProductDetails(
     productId,
     category,

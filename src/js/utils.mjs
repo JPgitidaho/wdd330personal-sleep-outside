@@ -47,31 +47,48 @@ export async function loadHeaderFooter() {
   renderWithTemplate(footer, document.getElementById("main-footer"));
 }
 
-export function alertMessage(message, { type = "error", scroll = true } = {}) {
-  const alert = document.createElement("div");
-  alert.classList.add("alert", `alert--${type}`);
+export function alertMessage(
+  messages,
+  { type = "error", scroll = true, timeout = 5000 } = {},
+) {
+  const main = document.querySelector("main");
 
-  const text = document.createElement("span");
-  text.classList.add("alert__text");
-  text.textContent =
-    typeof message === "string" ? message : JSON.stringify(message);
+  let container = main.querySelector(".alert-list");
+  if (!container) {
+    container = document.createElement("section");
+    container.classList.add("alert-list");
+    main.prepend(container);
+  }
 
-  const closeBtn = document.createElement("button");
-  closeBtn.classList.add("alert__close");
-  closeBtn.textContent = "×";
-  closeBtn.addEventListener("click", () => alert.remove());
+  const msgs = Array.isArray(messages) ? messages : [messages];
 
-  alert.append(text, closeBtn);
-  document.body.appendChild(alert);
+  msgs.forEach((msg) => {
+    const alert = document.createElement("div");
+    alert.classList.add("alert", `alert--${type}`);
+
+    const text = document.createElement("span");
+    text.classList.add("alert__text");
+    text.textContent = msg;
+
+    const closeBtn = document.createElement("button");
+    closeBtn.classList.add("alert__close");
+    closeBtn.textContent = "×";
+    closeBtn.addEventListener("click", () => alert.remove());
+
+    alert.append(text, closeBtn);
+    container.appendChild(alert);
+
+    if (timeout > 0 && type === "success") {
+      setTimeout(() => {
+        if (alert.isConnected) alert.remove();
+      }, timeout);
+    }
+  });
 
   if (scroll) window.scrollTo(0, 0);
+}
 
-  setTimeout(() => {
-    if (alert.isConnected) {
-      alert.classList.add("alert--hide");
-      alert.addEventListener("transitionend", () => alert.remove(), {
-        once: true,
-      });
-    }
-  }, 5000);
+export function removeAllAlerts() {
+  const container = document.querySelector(".alert-list");
+  if (container) container.remove();
 }

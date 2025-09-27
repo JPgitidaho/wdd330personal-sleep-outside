@@ -37,9 +37,24 @@ export default class ProductDetails {
 
     clone.querySelector("h3").textContent = product.Brand?.Name ?? "";
     clone.querySelector("h2").textContent = product.Name ?? "";
-    clone.querySelector("img").src =
-      product.Images?.PrimaryLarge ?? product.Images?.PrimaryMedium ?? "";
-    clone.querySelector("img").alt = product.Name ?? "";
+
+    const oldImg = clone.querySelector("img");
+    const picture = document.createElement("picture");
+
+    const sourceLarge = document.createElement("source");
+    sourceLarge.media = "(min-width: 1024px)";
+    sourceLarge.srcset = product.Images?.PrimaryLarge ?? "";
+
+    const sourceMedium = document.createElement("source");
+    sourceMedium.media = "(min-width: 600px)";
+    sourceMedium.srcset = product.Images?.PrimaryMedium ?? "";
+
+    const img = document.createElement("img");
+    img.src = product.Images?.PrimarySmall ?? "";
+    img.alt = product.Name ?? "";
+
+    picture.append(sourceLarge, sourceMedium, img);
+    oldImg.replaceWith(picture);
 
     const rawDescription =
       product.DescriptionHtmlSimple ?? product.Description ?? "";
@@ -52,17 +67,17 @@ export default class ProductDetails {
     ) {
       clone.querySelector(".price").innerHTML =
         `<span style="text-decoration: line-through; color: #888;">$${product.SuggestedRetailPrice.toFixed(
-          2
+          2,
         )}</span>`;
       clone.querySelector(".final-price").innerHTML =
         `<span style="font-weight: bold; color: #b91c1c;">$${product.FinalPrice.toFixed(
-          2
+          2,
         )}</span>`;
 
       const discount = Math.round(
         ((product.SuggestedRetailPrice - product.FinalPrice) /
           product.SuggestedRetailPrice) *
-          100
+          100,
       );
       const discountBadge = document.createElement("span");
       discountBadge.classList.add("discount-badge");
@@ -89,8 +104,16 @@ export default class ProductDetails {
     if (existing) {
       existing.quantity = (existing.quantity || 1) + 1;
     } else {
-      this.product.quantity = 1;
-      cart.push(this.product);
+      const newItem = {
+        Id: this.product.Id,
+        Name: this.product.Name,
+        Images: this.product.Images,
+        FinalPrice: this.product.FinalPrice,
+        ListPrice: this.product.ListPrice,
+        SuggestedRetailPrice: this.product.SuggestedRetailPrice,
+        quantity: 1,
+      };
+      cart.push(newItem);
     }
 
     setLocalStorage("so-cart", cart);
