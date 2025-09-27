@@ -46,3 +46,32 @@ export async function loadHeaderFooter() {
   renderWithTemplate(header, document.getElementById("main-header"));
   renderWithTemplate(footer, document.getElementById("main-footer"));
 }
+
+export function alertMessage(message, { type = "error", scroll = true } = {}) {
+  const alert = document.createElement("div");
+  alert.classList.add("alert", `alert--${type}`);
+
+  const text = document.createElement("span");
+  text.classList.add("alert__text");
+  text.textContent =
+    typeof message === "string" ? message : JSON.stringify(message);
+
+  const closeBtn = document.createElement("button");
+  closeBtn.classList.add("alert__close");
+  closeBtn.textContent = "×";
+  closeBtn.addEventListener("click", () => alert.remove());
+
+  alert.append(text, closeBtn);
+  document.body.appendChild(alert);
+
+  if (scroll) window.scrollTo(0, 0);
+
+  setTimeout(() => {
+    if (alert.isConnected) {
+      alert.classList.add("alert--hide");
+      alert.addEventListener("transitionend", () => alert.remove(), {
+        once: true,
+      });
+    }
+  }, 5000);
+}
