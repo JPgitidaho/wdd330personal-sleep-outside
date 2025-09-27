@@ -1,5 +1,5 @@
 import { getParam, loadHeaderFooter } from "./utils.mjs";
-import ProductData from "./ProductData.mjs";
+import { getProductById } from "./ExternalServices.mjs";
 import ProductDetails from "./ProductDetails.mjs";
 import { initCartBadge } from "./cartBadge.mjs";
 
@@ -8,22 +8,18 @@ async function init() {
   initCartBadge();
 
   const productId = getParam("product");
-  const dataSource = new ProductData("tents");
-  const product = new ProductDetails(productId, dataSource);
+  const category = getParam("category");
+  const productElement = document.querySelector("#product-details");
+
+  // Le paso un objeto con la forma que espera ProductDetails
+  const product = new ProductDetails(
+    productId,
+    category,
+    { findProductById: (id) => getProductById(id) },
+    productElement,
+  );
+
   product.init();
 }
+
 init();
-
-//function addProductToCart(product) {
-//  setLocalStorage("so-cart", product);
-//}
-// add to cart button event handler
-//async function addToCartHandler(e) {
-//const product = await dataSource.findProductById(e.target.dataset.id);
-//addProductToCart(product);
-//}
-
-// add listener to Add to Cart button
-//document
-// .getElementById("addToCart")
-//  .addEventListener("click", addToCartHandler);
