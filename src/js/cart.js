@@ -43,7 +43,7 @@ function renderCartContents() {
   const itemsCount = cartItems.reduce((n, it) => n + (it.quantity || 1), 0);
 
   if (totalElement)
-    totalElement.textContent = `Subtotal (${itemsCount} items): $${subtotal.toFixed(2)}`;
+    totalElement.textContent = `Total (${itemsCount} items): $${subtotal.toFixed(2)}`;
   if (footerElement) footerElement.classList.remove("hide");
 
   document.querySelectorAll(".remove-item").forEach((btn) => {

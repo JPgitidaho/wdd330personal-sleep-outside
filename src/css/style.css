@@ -348,6 +348,7 @@ button {
 .qty-controls {
   display: flex;
   align-items: center;
+  text-align: center;
   gap: 0.6rem;
   font-weight: 600;
 }
@@ -377,6 +378,7 @@ button {
 .cart-card .card__name {
   font-weight: bold;
   font-size: 1rem;
+  margin: 25px 15px 0 0;
 }
 
 .cart-card__price {
