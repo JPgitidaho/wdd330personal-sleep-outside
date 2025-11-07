@@ -1,5 +1,5 @@
 export function initCartBadge() {
-  const el = document.querySelector("a[href$='cart/index.html']");
+const el = document.querySelector("a[href*='cart']");
 
   if (!el) return;
   const update = () => {

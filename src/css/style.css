@@ -40,9 +40,12 @@ a[href*=cart]:after {
 a[href*="cart"][data-count="0"]::after,
 a[href*="cart"][data-count=""]::after {
   display: none;
-color: var(--light-grey);
-}
 
+}
+.data-count {
+ color: var(--light-grey);
+ 
+}
 body {
   font-family: var(--font-body);
   font-size: var(--font-base);
