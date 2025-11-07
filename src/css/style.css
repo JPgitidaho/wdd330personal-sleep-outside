@@ -34,7 +34,7 @@ a[href*="cart"]::after {
   font-size: 10px;
   font-weight: 700;
   background: #ef4444;
-  
+  color: var(--light-grey);
   text-align: center;
 }
 a[href*="cart"][data-count="0"]::after,
